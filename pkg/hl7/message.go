@@ -19,11 +19,7 @@ func ParseMessage(s string) Message {
 		segments = append(segments, &segment)
 	}
 
-	msh := Message{
-		Segments: segments,
-	}
-
-	return msh
+	return NewMessage(segments)
 }
 
 func NewMessage(segments []*Segment) Message {

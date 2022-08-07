@@ -2,6 +2,7 @@ package hl7
 
 import "strings"
 
+type ComponentString string
 type Field struct {
 	Components []*Component
 }
@@ -29,6 +30,17 @@ func NewField(c []*Component) Field {
 	}
 
 	return f
+}
+
+func FieldFromArray(componentStrings []ComponentString) Field {
+	components := []*Component{}
+
+	for _, c := range componentStrings {
+		component := ParseComponent(string(c))
+		components = append(components, &component)
+	}
+
+	return NewField(components)
 }
 
 func (f *Field) ToString(d Delimeters) string {

@@ -18,12 +18,7 @@ func ParseSegment(s string) Segment {
 		fields = append(fields, &field)
 	}
 
-	segment := Segment{
-		Name:   name,
-		Fields: fields,
-	}
-
-	return segment
+	return NewSegment(name, fields)
 
 }
 

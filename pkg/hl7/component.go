@@ -24,10 +24,7 @@ func ParseComponent(s string) Component {
 		subcomponents[i] = SubComponent(subcomponentStrings[i])
 	}
 
-	c := Component{
-		Data: subcomponents,
-	}
-	return c
+	return NewComponent(subcomponents)
 }
 
 func (c *Component) ToString(d Delimeters) string {

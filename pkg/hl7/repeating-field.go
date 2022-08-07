@@ -15,11 +15,7 @@ func ParseRepeatingField(s string) RepeatingField {
 		fields = append(fields, &field)
 	}
 
-	rpt := RepeatingField{
-		Repeats: fields,
-	}
-
-	return rpt
+	return NewRepeatingField(fields)
 }
 
 func NewRepeatingField(fields []*Field) RepeatingField {
