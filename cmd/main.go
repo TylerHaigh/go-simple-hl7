@@ -6,7 +6,7 @@ import (
 
 func main() {
 	c := hl7.Component{
-		Data: []string{"sss"},
+		Data: []hl7.SubComponent{"sss"},
 	}
 
 	println(c.GetSubComponent(4))

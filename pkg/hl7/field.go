@@ -65,7 +65,7 @@ func (f *Field) GetComponent(componentIndex uint) *Component {
 	return f.Components[componentIndex-1]
 }
 
-func (f *Field) GetSubComponent(componentIndex uint, subComponentIndex uint) string {
+func (f *Field) GetSubComponent(componentIndex uint, subComponentIndex uint) SubComponent {
 	comp := f.GetComponent(componentIndex)
 	if comp == nil {
 		return ""

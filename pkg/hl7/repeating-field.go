@@ -47,7 +47,7 @@ func (r *RepeatingField) GetComponent(repeatIndex uint, componentIndex uint) *Co
 	return rpt.GetComponent(componentIndex)
 }
 
-func (r *RepeatingField) GetSubComponent(repeatIndex uint, componentIndex uint, subComponentIndex uint) string {
+func (r *RepeatingField) GetSubComponent(repeatIndex uint, componentIndex uint, subComponentIndex uint) SubComponent {
 	comp := r.GetComponent(repeatIndex, componentIndex)
 	if comp != nil {
 		return ""
