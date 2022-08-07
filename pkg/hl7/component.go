@@ -6,7 +6,14 @@ type Component struct {
 	Data []string
 }
 
-func NewComponent(s string) Component {
+func NewComponent(s []string) Component {
+	c := Component{
+		Data: s,
+	}
+	return c
+}
+
+func ParseComponent(s string) Component {
 	subcomponents := strings.Split(s, string(StandardDelimters().SubComponentSeparator))
 	c := Component{
 		Data: subcomponents,

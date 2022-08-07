@@ -6,18 +6,26 @@ type Field struct {
 	Components []*Component
 }
 
-func Parse(s string) Field {
+func ParseField(s string) Field {
 
 	componentStrings := strings.Split(s, string(StandardDelimters().ComponentSeparator))
 	components := []*Component{}
 
 	for _, c := range componentStrings {
-		comp := NewComponent(c)
+		comp := ParseComponent(c)
 		components = append(components, &comp)
 	}
 
 	f := Field{
 		Components: components,
+	}
+
+	return f
+}
+
+func NewField(c []*Component) Field {
+	f := Field{
+		Components: c,
 	}
 
 	return f
@@ -55,4 +63,14 @@ func (f *Field) GetComponent(componentIndex uint) *Component {
 	}
 
 	return f.Components[componentIndex-1]
+}
+
+func (f *Field) GetSubComponent(componentIndex uint, subComponentIndex uint) string {
+	comp := f.GetComponent(componentIndex)
+	if comp == nil {
+		return ""
+	}
+
+	return comp.GetSubComponent(subComponentIndex)
+
 }
