@@ -7,11 +7,13 @@ type Segment struct {
 	Fields []*RepeatingField
 }
 
-func ParseSegment(name string, s string) Segment {
+func ParseSegment(s string) Segment {
 	fieldStrings := strings.Split(s, string(StandardDelimters().SegmentSeparator))
 	fields := []*RepeatingField{}
 
-	for _, f := range fieldStrings {
+	name := fieldStrings[0]
+
+	for _, f := range fieldStrings[1:] {
 		field := ParseRepeatingField(f)
 		fields = append(fields, &field)
 	}
