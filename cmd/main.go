@@ -11,4 +11,16 @@ func main() {
 
 	println(c.GetSubComponent(4))
 
+	s := hl7.SegmentFromComponentString(
+		"MSH",
+		[
+			// ["1"]
+			// [],
+			// [
+			// 	[ "111^aa^aa" ],
+			// 	[ "111^aa^aa" ],
+			// ]
+		]
+	)
+
 }

@@ -3,6 +3,9 @@ package hl7
 import "strings"
 
 type ComponentString string
+
+//type FieldComponentList []ComponentString
+
 type Field struct {
 	Components []*Component
 }
@@ -32,7 +35,7 @@ func NewField(c []*Component) Field {
 	return f
 }
 
-func FieldFromArray(componentStrings []ComponentString) Field {
+func FieldFromComponents(componentStrings []ComponentString) Field {
 	components := []*Component{}
 
 	for _, c := range componentStrings {

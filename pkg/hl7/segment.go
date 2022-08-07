@@ -19,7 +19,6 @@ func ParseSegment(s string) Segment {
 	}
 
 	return NewSegment(name, fields)
-
 }
 
 func NewSegment(name string, fields []*RepeatingField) Segment {
@@ -29,6 +28,17 @@ func NewSegment(name string, fields []*RepeatingField) Segment {
 	}
 
 	return segment
+}
+
+func SegmentFromComponentString(name string, fieldArray []RepeatingFieldList) Segment {
+
+	fields := []*RepeatingField{}
+	for _, fa := range fieldArray {
+		field := RepeatingFieldFromComponents(fa)
+		fields = append(fields, &field)
+	}
+
+	return NewSegment(name, fields)
 }
 
 func (s *Segment) GetField(fieldIndex uint) *RepeatingField {
