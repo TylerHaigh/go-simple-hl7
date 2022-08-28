@@ -54,7 +54,7 @@ func (f *Field) ToString(d Delimeters) string {
 	for i, c := range f.Components {
 		str += c.ToString(d)
 
-		if i != fieldLen {
+		if i != fieldLen-1 {
 			str += string(d.FieldSeparator)
 		}
 	}

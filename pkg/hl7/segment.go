@@ -110,7 +110,7 @@ func (s *Segment) ToString(d Delimeters) string {
 
 	for i, f := range s.Fields {
 		str += f.ToString(d)
-		if i != lenFields {
+		if i != lenFields-1 {
 			str += string(d.FieldSeparator)
 		}
 	}

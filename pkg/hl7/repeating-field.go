@@ -90,7 +90,7 @@ func (r *RepeatingField) ToString(d Delimeters) string {
 
 	for i, f := range r.Repeats {
 		str += f.ToString(d)
-		if i != lenField {
+		if i != lenField-1 {
 			str += string(d.RepeatSeparator)
 		}
 	}

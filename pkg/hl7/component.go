@@ -15,7 +15,7 @@ func NewComponent(s []SubComponent) Component {
 	return c
 }
 
-func ParseComponent(s string) Component {
+func extractSubcomponentStrings(s string) []SubComponent {
 	subcomponentStrings := strings.Split(s, string(StandardDelimters().SubComponentSeparator))
 
 	// covert strings to SubComponents
@@ -24,6 +24,11 @@ func ParseComponent(s string) Component {
 		subcomponents[i] = SubComponent(subcomponentStrings[i])
 	}
 
+	return subcomponents
+}
+
+func ParseComponent(s string) Component {
+	subcomponents := extractSubcomponentStrings(s)
 	return NewComponent(subcomponents)
 }
 
@@ -34,7 +39,7 @@ func (c *Component) ToString(d Delimeters) string {
 
 	for i, sc := range c.Data {
 		str += string(sc)
-		if i != compLen {
+		if i != compLen-1 {
 			str += string(d.SubComponentSeparator)
 		}
 	}
@@ -49,4 +54,13 @@ func (c *Component) GetSubComponent(idx uint) SubComponent {
 
 	comp := c.Data[idx-1]
 	return comp
+}
+
+func (c *Component) SetFromString(s string) {
+	subcomponents := extractSubcomponentStrings(s)
+	c.Set(subcomponents)
+}
+
+func (c *Component) Set(s []SubComponent) {
+	c.Data = s
 }
