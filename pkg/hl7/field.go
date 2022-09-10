@@ -55,12 +55,11 @@ func (f *Field) ToString(d Delimeters) string {
 		str += c.ToString(d)
 
 		if i != fieldLen-1 {
-			str += string(d.FieldSeparator)
+			str += string(d.ComponentSeparator)
 		}
 	}
 
 	return str
-
 }
 
 func (f *Field) GetComponentString(componentIndex uint) string {
