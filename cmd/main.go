@@ -1,7 +1,7 @@
 package main
 
 import (
-	"com.tylerhaigh/go-simple-hl7/pkg/hl7"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7"
 )
 
 func main() {

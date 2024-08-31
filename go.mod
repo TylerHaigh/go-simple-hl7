@@ -1,4 +1,4 @@
-module com.tylerhaigh/go-simple-hl7
+module github.com/TylerHaigh/go-simple-hl7
 
 go 1.18
 

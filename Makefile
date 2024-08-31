@@ -1,4 +1,4 @@
-PACKAGE_NAME=com.tylerhaigh/go-simple-hl7/pkg/hl7
+PACKAGE_NAME=github.com/TylerHaigh/go-simple-hl7/pkg/hl7
 
 test:
 	go test -timeout 30s -v $(PACKAGE_NAME)
