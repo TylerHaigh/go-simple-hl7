@@ -119,3 +119,19 @@ func (m *Message) GetComponentString(
 
 	return c.ToString(StandardDelimters())
 }
+
+
+func (m *Message) ToString(d Delimeters) string {
+
+	str := ""
+	lenSegments := len(s.Segments)
+
+	for i, s := range s.Segments {
+		str += s.ToString(d)
+		if i != lenSegments-1 {
+			str += string(d.SegmentSeparator)
+		}
+	}
+
+	return str
+}
