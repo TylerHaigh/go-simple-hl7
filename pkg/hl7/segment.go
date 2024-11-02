@@ -8,7 +8,7 @@ type Segment struct {
 }
 
 func ParseSegment(s string) Segment {
-	fieldStrings := strings.Split(s, string(StandardDelimters().SegmentSeparator))
+	fieldStrings := strings.Split(s, string(StandardDelimters().FieldSeparator))
 	fields := []*RepeatingField{}
 
 	name := fieldStrings[0]
