@@ -20,6 +20,11 @@ func ParseRepeatingField(s string) RepeatingField {
 	return NewRepeatingField(fields)
 }
 
+func ParseRepeatingFieldPointer(s string) *RepeatingField {
+	rpt := ParseRepeatingField(s)
+	return &rpt
+}
+
 func RepeatingFieldFromComponents(fieldArray RepeatingFieldList) RepeatingField {
 
 	fields := []*Field{}
@@ -37,6 +42,11 @@ func NewRepeatingField(fields []*Field) RepeatingField {
 	}
 
 	return rpt
+}
+
+func NewRepeatingFieldPointer(fields []*Field) *RepeatingField {
+	rpt := NewRepeatingField(fields)
+	return &rpt
 }
 
 func (r *RepeatingField) GetRepeat(repeatIndex uint) *Field {

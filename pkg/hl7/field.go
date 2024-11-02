@@ -27,12 +27,22 @@ func ParseField(s string) Field {
 	return f
 }
 
+func ParseFieldPointer(s string) *Field {
+	f := ParseField(s)
+	return &f
+}
+
 func NewField(c []*Component) Field {
 	f := Field{
 		Components: c,
 	}
 
 	return f
+}
+
+func NewFieldPointer(c []*Component) *Field {
+	f := NewField(c)
+	return &f
 }
 
 func FieldFromComponents(componentStrings []ComponentString) Field {

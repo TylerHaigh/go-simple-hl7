@@ -15,6 +15,11 @@ func NewComponent(s []SubComponent) Component {
 	return c
 }
 
+func NewComponentPointer(s []SubComponent) *Component {
+	c := NewComponent(s)
+	return &c
+}
+
 func extractSubcomponentStrings(s string) []SubComponent {
 	subcomponentStrings := strings.Split(s, string(StandardDelimters().SubComponentSeparator))
 
@@ -30,6 +35,11 @@ func extractSubcomponentStrings(s string) []SubComponent {
 func ParseComponent(s string) Component {
 	subcomponents := extractSubcomponentStrings(s)
 	return NewComponent(subcomponents)
+}
+
+func ParseComponentPointer(s string) *Component {
+	c := ParseComponent(s)
+	return &c
 }
 
 func (c *Component) ToString(d Delimeters) string {

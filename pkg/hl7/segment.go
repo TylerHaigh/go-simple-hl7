@@ -21,6 +21,11 @@ func ParseSegment(s string) Segment {
 	return NewSegment(name, fields)
 }
 
+func ParseSegmentPointer(s string) *Segment {
+	seg := ParseSegment(s)
+	return &seg
+}
+
 func NewSegment(name string, fields []*RepeatingField) Segment {
 	segment := Segment{
 		Name:   name,
@@ -28,6 +33,11 @@ func NewSegment(name string, fields []*RepeatingField) Segment {
 	}
 
 	return segment
+}
+
+func NewSegmentPointer(name string, fields []*RepeatingField) *Segment {
+	seg := NewSegment(name, fields)
+	return &seg
 }
 
 func SegmentFromComponentString(name string, fieldArray []RepeatingFieldList) Segment {

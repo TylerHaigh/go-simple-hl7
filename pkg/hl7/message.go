@@ -1,8 +1,11 @@
 package hl7
 
 import (
+	"fmt"
 	"strings"
+	"time"
 
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/enums"
 	"golang.org/x/exp/slices"
 )
 
@@ -22,12 +25,22 @@ func ParseMessage(s string) Message {
 	return NewMessage(segments)
 }
 
+func ParseMessagePointer(s string) *Message {
+	m := ParseMessage(s)
+	return &m
+}
+
 func NewMessage(segments []*Segment) Message {
 	msh := Message{
 		Segments: segments,
 	}
 
 	return msh
+}
+
+func NewMessagePointer(segments []*Segment) *Message {
+	m := NewMessage(segments)
+	return &m
 }
 
 func (m *Message) GetSegment(segmentName string) *Segment {
@@ -120,13 +133,12 @@ func (m *Message) GetComponentString(
 	return c.ToString(StandardDelimters())
 }
 
-
 func (m *Message) ToString(d Delimeters) string {
 
 	str := ""
-	lenSegments := len(s.Segments)
+	lenSegments := len(m.Segments)
 
-	for i, s := range s.Segments {
+	for i, s := range m.Segments {
 		str += s.ToString(d)
 		if i != lenSegments-1 {
 			str += string(d.SegmentSeparator)
@@ -134,4 +146,77 @@ func (m *Message) ToString(d Delimeters) string {
 	}
 
 	return str
+}
+
+func (m *Message) CreateAckMessage() Message {
+
+	t := time.Now()
+	hl7Time := t.Format("YYYYMMDDHHmmss")
+
+	msh := NewSegment("MSH", []*RepeatingField{
+		ParseRepeatingFieldPointer("|"),     // MSH-1
+		ParseRepeatingFieldPointer("^~\\&"), // MSH-2
+		m.GetField("MSH", 5),                // MSH-3: Sending application (obtain from current receiving application MSH-5)
+		m.GetField("MSH", 6),                // MSH-4: Sending facility (obtain from current receiving facility MSH-6)
+		m.GetField("MSH", 3),                // MSH-5: Receiving application (obtain current from sending application MSH-3)
+		m.GetField("MSH", 4),                // MSH-6: Receiving facility (obtain from current sending facility MSH-4)
+		ParseRepeatingFieldPointer(hl7Time), // MSH-7: Date/Time
+		ParseRepeatingFieldPointer(""),      // MSH-8: Security (leave blank)
+		ParseRepeatingFieldPointer("ACK"),   // MSH-9: MessageType (ACK)
+		ParseRepeatingFieldPointer(
+			fmt.Sprintf("ACK%s", hl7Time), // MSH-10: Message Control ID (generated)
+		),
+		m.GetField("MSH", 11), // MSH-11: Processing ID
+		m.GetField("MSH", 12), // MSH-12: Version ID
+	})
+
+	msa := NewSegment("MSA", []*RepeatingField{
+		ParseRepeatingFieldPointer("AA"),
+		m.GetField("MSH", 10),
+	})
+
+	segments := []*Segment{&msh, &msa}
+	ack := NewMessage(segments)
+
+	return ack
+}
+
+func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCode) Message {
+	t := time.Now()
+	hl7Time := t.Format("YYYYMMDDHHmmss")
+
+	msh := NewSegment("MSH", []*RepeatingField{
+		ParseRepeatingFieldPointer("|"),     // MSH-1
+		ParseRepeatingFieldPointer("^~\\&"), // MSH-2
+		m.GetField("MSH", 5),                // MSH-3: Sending application (obtain from current receiving application MSH-5)
+		m.GetField("MSH", 6),                // MSH-4: Sending facility (obtain from current receiving facility MSH-6)
+		m.GetField("MSH", 3),                // MSH-5: Receiving application (obtain current from sending application MSH-3)
+		m.GetField("MSH", 4),                // MSH-6: Receiving facility (obtain from current sending facility MSH-4)
+		ParseRepeatingFieldPointer(hl7Time), // MSH-7: Date/Time
+		ParseRepeatingFieldPointer(""),      // MSH-8: Security (leave blank)
+		ParseRepeatingFieldPointer("ACK"),   // MSH-9: MessageType (ACK)
+		ParseRepeatingFieldPointer(
+			fmt.Sprintf("ACK%s", hl7Time), // MSH-10: Message Control ID (generated)
+		),
+		m.GetField("MSH", 11), // MSH-11: Processing ID
+		m.GetField("MSH", 12), // MSH-12: Version ID
+	})
+
+	msa := NewSegment("MSA", []*RepeatingField{
+		ParseRepeatingFieldPointer(acknowledgementCode.String()),
+		m.GetField("MSH", 10),
+	})
+
+	// TODO: Create ERR segments from an error listing
+
+	//     const version = nack.getHeader().versionId.toString();
+	//     for (const e of errors) {
+	//       const err = createErrorSegment(version, e);
+	//       nack.pushSegment(err);
+	//     }
+
+	segments := []*Segment{&msh, &msa}
+	nack := NewMessage(segments)
+
+	return nack
 }
