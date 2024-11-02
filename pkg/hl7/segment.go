@@ -1,6 +1,9 @@
 package hl7
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type Segment struct {
 	Name   string
@@ -12,6 +15,12 @@ func ParseSegment(s string) Segment {
 	fields := []*RepeatingField{}
 
 	name := fieldStrings[0]
+
+	// Handle case where MSH-1 is the field Separator delimiter
+	if name == "MSH" {
+		msh1 := ParseRepeatingField("|")
+		fields = append(fields, &msh1)
+	}
 
 	for _, f := range fieldStrings[1:] {
 		field := ParseRepeatingField(f)
@@ -115,10 +124,16 @@ func (s *Segment) GetComponentString(fieldIndex uint, repeatIndex uint, componen
 
 func (s *Segment) ToString(d Delimeters) string {
 
-	str := ""
+	str := fmt.Sprintf("%s%s", s.Name, string(d.FieldSeparator))
 	lenFields := len(s.Fields)
 
 	for i, f := range s.Fields {
+
+		// Skip over MSH-1 as this is covered above
+		if s.Name == "MSH" && i == 0 {
+			continue
+		}
+
 		str += f.ToString(d)
 		if i != lenFields-1 {
 			str += string(d.FieldSeparator)

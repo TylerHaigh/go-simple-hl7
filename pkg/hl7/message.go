@@ -151,7 +151,11 @@ func (m *Message) ToString(d Delimeters) string {
 func (m *Message) CreateAckMessage() Message {
 
 	t := time.Now()
-	hl7Time := t.Format("YYYYMMDDHHmmss")
+
+	// https://www.geeksforgeeks.org/time-formatting-in-golang/
+	// https://www.practical-go-lessons.com/post/how-to-format-time-with-golang-ccc5ja83ibmc70m98260
+
+	hl7Time := t.Format("20060102150405")
 
 	msh := NewSegment("MSH", []*RepeatingField{
 		ParseRepeatingFieldPointer("|"),     // MSH-1
@@ -183,7 +187,21 @@ func (m *Message) CreateAckMessage() Message {
 
 func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCode) Message {
 	t := time.Now()
-	hl7Time := t.Format("YYYYMMDDHHmmss")
+
+	// https://www.geeksforgeeks.org/time-formatting-in-golang/
+	// https://www.practical-go-lessons.com/post/how-to-format-time-with-golang-ccc5ja83ibmc70m98260
+	//
+	// Whereas other languages use a format like YYYY-MM-DD to format dates like: 2022-10-21,
+	// Go uses a reference time.
+	// This reference time is a point in time that the language will use to parse your
+	// layout : - 2 January 2006 03:04:05 PM in the time zone UTC -7
+	//
+	// You might ask why this particular date. That’s because when you read it like that :
+	// 01/02 03:04:05PM '06 -0700
+	//
+	// You can note that numbers follow each other: 1 (January), 2 (day), 3 (hour), 4(minutes)…
+
+	hl7Time := t.Format("20060102150405")
 
 	msh := NewSegment("MSH", []*RepeatingField{
 		ParseRepeatingFieldPointer("|"),     // MSH-1
