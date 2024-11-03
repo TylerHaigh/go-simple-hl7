@@ -4,6 +4,7 @@ import (
 	"net"
 
 	hl7 "github.com/TylerHaigh/go-simple-hl7/pkg/hl7"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/messaging"
 )
 
 type Res struct {
@@ -12,6 +13,6 @@ type Res struct {
 }
 
 func (r *Res) End() {
-	bytes := WrapInEnvelope((r.Ack))
+	bytes := messaging.WrapInEnvelope((r.Ack))
 	r.Conn.Write(bytes)
 }

@@ -9,6 +9,7 @@ import (
 	"net"
 
 	hl7 "github.com/TylerHaigh/go-simple-hl7/pkg/hl7"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/messaging"
 )
 
 type SimpleHl7TcpServer struct {
@@ -83,8 +84,8 @@ func (s *SimpleHl7TcpServer) handleConnection(conn net.Conn) {
 
 	defer conn.Close()
 	messageBuffer := bytes.NewBuffer([]byte{})
-
-	buffer, err := bufio.NewReader(conn).ReadBytes(FS)
+	reader := bufio.NewReader(conn)
+	buffer, err := reader.ReadBytes(messaging.FS)
 
 	if err != nil {
 		log.Println("Client left.")
@@ -93,11 +94,16 @@ func (s *SimpleHl7TcpServer) handleConnection(conn net.Conn) {
 	}
 
 	messageBuffer.Write(buffer)
+	cr, _ := reader.ReadByte()
+	messageBuffer.Write([]byte{cr})
 
 	vt := make([]byte, 1)
 	messageBuffer.Read(vt)
 	messageBuffer.Truncate(messageBuffer.Len() - 1)
-	messageStr, _ := messageBuffer.ReadString(FS)
+	messageStr, _ := messageBuffer.ReadString(messaging.FS)
+
+	// Trim FS character
+	messageStr = messageStr[:len(messageStr)-1]
 
 	message := hl7.ParseMessage(messageStr)
 	req := Req{Message: message}
