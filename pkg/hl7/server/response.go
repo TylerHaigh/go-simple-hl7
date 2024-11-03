@@ -12,13 +12,6 @@ type Res struct {
 }
 
 func (r *Res) End() {
-	ackStringBytes := ([]byte)(r.Ack.ToString(hl7.StandardDelimters()))
-	var bytes []byte
-
-	bytes = append(bytes, VT)
-	bytes = append(bytes, ackStringBytes...)
-	bytes = append(bytes, FS)
-	bytes = append(bytes, CR)
-
+	bytes := WrapInEnvelope((r.Ack))
 	r.Conn.Write(bytes)
 }

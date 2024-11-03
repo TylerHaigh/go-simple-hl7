@@ -3,7 +3,9 @@ package server
 import (
 	"bufio"
 	"bytes"
+	"crypto/tls"
 	"fmt"
+	"log"
 	"net"
 
 	hl7 "github.com/TylerHaigh/go-simple-hl7/pkg/hl7"
@@ -20,9 +22,37 @@ type ConnectionDetails struct {
 	Port string
 }
 
+type TLSConnectionDetails struct {
+	Host              string
+	Port              string
+	ServerCertificate string
+	ServerKey         string
+}
+
 func (s *SimpleHl7TcpServer) Start(conn ConnectionDetails) error {
 	address := fmt.Sprintf("%s:%s", conn.Host, conn.Port)
 	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		return err
+	}
+
+	s.listener = listener
+
+	return nil
+}
+
+func (s *SimpleHl7TcpServer) StartTLS(conn TLSConnectionDetails) error {
+	address := fmt.Sprintf("%s:%s", conn.Host, conn.Port)
+
+	cer, err := tls.LoadX509KeyPair(conn.ServerCertificate, conn.ServerKey)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	config := tls.Config{Certificates: []tls.Certificate{cer}}
+
+	listener, err := tls.Listen("tcp", address, &config)
 	if err != nil {
 		return err
 	}
@@ -39,12 +69,12 @@ func (s *SimpleHl7TcpServer) Close() {
 func (s *SimpleHl7TcpServer) AcceptConnection() {
 	c, err := s.listener.Accept()
 	if err != nil {
-		fmt.Println("Error connecting:", err.Error())
+		log.Println("Error connecting:", err.Error())
 		return
 	}
-	fmt.Println("Client connected.")
+	log.Println("Client connected.")
 
-	fmt.Println("Client " + c.RemoteAddr().String() + " connected.")
+	log.Println("Client " + c.RemoteAddr().String() + " connected.")
 
 	go s.handleConnection(c)
 }
@@ -57,7 +87,7 @@ func (s *SimpleHl7TcpServer) handleConnection(conn net.Conn) {
 	buffer, err := bufio.NewReader(conn).ReadBytes(FS)
 
 	if err != nil {
-		fmt.Println("Client left.")
+		log.Println("Client left.")
 		conn.Close()
 		return
 	}
