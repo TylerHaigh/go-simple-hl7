@@ -8,11 +8,11 @@ import (
 )
 
 type Res struct {
-	Ack  hl7.Message
+	Ack  *hl7.Message
 	Conn net.Conn
 }
 
 func (r *Res) End() {
-	bytes := messaging.WrapInEnvelope((r.Ack))
+	bytes := messaging.WrapInEnvelope(*r.Ack)
 	r.Conn.Write(bytes)
 }

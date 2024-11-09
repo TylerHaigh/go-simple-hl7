@@ -14,7 +14,7 @@ func TestCreateAck(t *testing.T) {
 	msg := ParseMessage(messageStr)
 
 	now := time.Now()
-	ack := msg.CreateAckMessage()
+	ack := msg.CreateAckMessage(enums.ApplicationAccept)
 
 	hl7Time := now.Format("20060102150405")
 	expected := fmt.Sprintf("MSH|^~\\&|PAS-B|HOS-B|PAS-A|HOS-A|%s||ACK|ACK%s|P|2.8\rMSA|AA|MSG00001", hl7Time, hl7Time)

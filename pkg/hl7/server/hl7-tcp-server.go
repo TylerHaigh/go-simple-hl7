@@ -2,15 +2,24 @@ package server
 
 import (
 	"bufio"
-	"bytes"
 	"crypto/tls"
 	"fmt"
 	"log"
 	"net"
 
-	hl7 "github.com/TylerHaigh/go-simple-hl7/pkg/hl7"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/enums"
 	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/messaging"
 )
+
+type ISimpleHl7TcpServer interface {
+	Start(conn ConnectionDetails) error
+	StartTLS(conn TLSConnectionDetails) error
+	Close() error
+	AcceptConnection() error
+
+	Use(fn HandlerFunction)
+	HandleError(fn ErrorFunction)
+}
 
 type SimpleHl7TcpServer struct {
 	listener      net.Listener
@@ -63,51 +72,39 @@ func (s *SimpleHl7TcpServer) StartTLS(conn TLSConnectionDetails) error {
 	return nil
 }
 
-func (s *SimpleHl7TcpServer) Close() {
-	s.listener.Close()
+func (s *SimpleHl7TcpServer) Close() error {
+	return s.listener.Close()
 }
 
-func (s *SimpleHl7TcpServer) AcceptConnection() {
+func (s *SimpleHl7TcpServer) AcceptConnection() error {
 	c, err := s.listener.Accept()
 	if err != nil {
 		log.Println("Error connecting:", err.Error())
-		return
+		return err
 	}
 	log.Println("Client connected.")
 
 	log.Println("Client " + c.RemoteAddr().String() + " connected.")
 
 	go s.handleConnection(c)
+	return nil
 }
 
 func (s *SimpleHl7TcpServer) handleConnection(conn net.Conn) {
 
 	defer conn.Close()
-	messageBuffer := bytes.NewBuffer([]byte{})
 	reader := bufio.NewReader(conn)
-	buffer, err := reader.ReadBytes(messaging.FS)
 
+	message, err := messaging.ReadHl7Message(reader)
 	if err != nil {
-		log.Println("Client left.")
+		log.Printf("Error reading HL7 message. Error: %v\n", err)
 		conn.Close()
 		return
 	}
 
-	messageBuffer.Write(buffer)
-	cr, _ := reader.ReadByte()
-	messageBuffer.Write([]byte{cr})
-
-	vt := make([]byte, 1)
-	messageBuffer.Read(vt)
-	messageBuffer.Truncate(messageBuffer.Len() - 1)
-	messageStr, _ := messageBuffer.ReadString(messaging.FS)
-
-	// Trim FS character
-	messageStr = messageStr[:len(messageStr)-1]
-
-	message := hl7.ParseMessage(messageStr)
+	ack := message.CreateAckMessage(enums.ApplicationAccept)
 	req := Req{Message: message}
-	res := Res{Ack: message.CreateAckMessage(), Conn: conn}
+	res := Res{Ack: &ack, Conn: conn}
 
 	ctx := DefaultCtx{
 		Req:               &req,

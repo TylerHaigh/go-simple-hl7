@@ -5,5 +5,5 @@ import (
 )
 
 type Req struct {
-	Message hl7.Message
+	Message *hl7.Message
 }

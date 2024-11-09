@@ -148,7 +148,7 @@ func (m *Message) ToString(d Delimeters) string {
 	return str
 }
 
-func (m *Message) CreateAckMessage() Message {
+func (m *Message) CreateAckMessage(acknowledgementCode enums.AcknowledgementCode) Message {
 
 	t := time.Now()
 
@@ -175,7 +175,7 @@ func (m *Message) CreateAckMessage() Message {
 	})
 
 	msa := NewSegment("MSA", []*RepeatingField{
-		ParseRepeatingFieldPointer("AA"),
+		ParseRepeatingFieldPointer(acknowledgementCode.String()),
 		m.GetField("MSH", 10),
 	})
 
