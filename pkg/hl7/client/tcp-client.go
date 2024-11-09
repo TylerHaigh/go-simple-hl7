@@ -2,7 +2,6 @@ package client
 
 import (
 	"bufio"
-	"bytes"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -127,25 +126,8 @@ func (c *SimpleHl7TcpClient) writeMessage(message messaging.Hl7Message) (messagi
 
 	c.state = AcknowledgementWait
 
-	messageBuffer := bytes.NewBuffer([]byte{})
 	reader := bufio.NewReader(c.conn)
-	ackBytes, err := reader.ReadBytes(messaging.FS)
-
-	if err != nil {
-		return "", err
-	}
-
-	messageBuffer.Write(ackBytes)
-	cr, _ := reader.ReadByte()
-	messageBuffer.Write([]byte{cr})
-
-	vt := make([]byte, 1)
-	messageBuffer.Read(vt)
-	messageBuffer.Truncate(messageBuffer.Len() - 1)
-	messageStr, err := messageBuffer.ReadString(messaging.FS)
-
-	// Trim FS character
-	messageStr = messageStr[:len(messageStr)-1]
+	messageStr, err := messaging.ReadHl7MessageString(reader)
 
 	c.state = Ready
 
