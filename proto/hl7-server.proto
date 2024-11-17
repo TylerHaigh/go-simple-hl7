@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package hl7Server;
+
+option go_package = "github.com/TylerHaigh/go-simple-hl7/grpc/proto";
+
+message HL7Message {
+    string message = 1;
+}
+
+service HL7Service {
+    rpc SendMessage(HL7Message) returns (HL7Message);
+}
