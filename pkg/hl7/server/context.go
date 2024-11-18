@@ -1,10 +1,35 @@
 package server
 
+import (
+	"context"
+	"time"
+)
+
 type Ctx interface {
+	// To implement standard context.Context interface, the Server Context interface must also implement
+	// the same functions
+	context.Context
+
 	Next() error
 
 	Request() *Req
 	Response() *Res
+}
+
+func (c *DefaultCtx) Deadline() (deadline time.Time, ok bool) {
+	return
+}
+
+func (c *DefaultCtx) Done() <-chan struct{} {
+	return nil
+}
+
+func (c *DefaultCtx) Err() error {
+	return nil
+}
+
+func (c *DefaultCtx) Value(key any) any {
+	return nil
 }
 
 type DefaultCtx struct {
