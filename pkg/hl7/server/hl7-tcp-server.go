@@ -104,7 +104,7 @@ func (s *SimpleHl7TcpServer) handleConnection(conn net.Conn) {
 
 	ack := message.CreateAckMessage(enums.ApplicationAccept)
 	req := Req{Message: message}
-	res := Res{Ack: &ack, Conn: conn}
+	res := Res{Ack: ack, Conn: conn}
 
 	ctx := DefaultCtx{
 		Req:               &req,

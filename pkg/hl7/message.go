@@ -148,7 +148,7 @@ func (m *Message) ToString(d Delimeters) string {
 	return str
 }
 
-func (m *Message) CreateAckMessage(acknowledgementCode enums.AcknowledgementCode) Message {
+func (m *Message) CreateAckMessage(acknowledgementCode enums.AcknowledgementCode) *Message {
 
 	t := time.Now()
 
@@ -182,10 +182,10 @@ func (m *Message) CreateAckMessage(acknowledgementCode enums.AcknowledgementCode
 	segments := []*Segment{&msh, &msa}
 	ack := NewMessage(segments)
 
-	return ack
+	return &ack
 }
 
-func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCode) Message {
+func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCode) *Message {
 	t := time.Now()
 
 	// https://www.geeksforgeeks.org/time-formatting-in-golang/
@@ -236,5 +236,9 @@ func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCod
 	segments := []*Segment{&msh, &msa}
 	nack := NewMessage(segments)
 
-	return nack
+	return &nack
+}
+
+func (m *Message) AddSegment(s *Segment) {
+	m.Segments = append(m.Segments, s)
 }

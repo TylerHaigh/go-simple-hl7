@@ -1,6 +1,8 @@
 package hl7
 
-import "strings"
+import (
+	"strings"
+)
 
 type RepeatingFieldList [][]ComponentString
 
@@ -25,15 +27,27 @@ func ParseRepeatingFieldPointer(s string) *RepeatingField {
 	return &rpt
 }
 
-func RepeatingFieldFromComponents(fieldArray RepeatingFieldList) RepeatingField {
+func RepeatingFieldFromComponents(fieldArray RepeatingFieldList) *RepeatingField {
 
 	fields := []*Field{}
 	for _, components := range fieldArray {
 		field := FieldFromComponents(components)
-		fields = append(fields, &field)
+		fields = append(fields, field)
 	}
 
-	return NewRepeatingField(fields)
+	rpt := NewRepeatingField(fields)
+	return &rpt
+}
+
+func NewFieldRepeatList(componentStrings []string) RepeatingFieldList {
+	components := make([]ComponentString, len(componentStrings))
+
+	for i, s := range componentStrings {
+		components[i] = ComponentString(s)
+	}
+
+	rpt := RepeatingFieldList{components}
+	return rpt
 }
 
 func NewRepeatingField(fields []*Field) RepeatingField {

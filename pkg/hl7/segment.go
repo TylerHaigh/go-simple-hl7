@@ -49,15 +49,16 @@ func NewSegmentPointer(name string, fields []*RepeatingField) *Segment {
 	return &seg
 }
 
-func SegmentFromComponentString(name string, fieldArray []RepeatingFieldList) Segment {
+func SegmentFromComponentString(name string, fieldArray []RepeatingFieldList) *Segment {
 
 	fields := []*RepeatingField{}
 	for _, fa := range fieldArray {
 		field := RepeatingFieldFromComponents(fa)
-		fields = append(fields, &field)
+		fields = append(fields, field)
 	}
 
-	return NewSegment(name, fields)
+	seg := NewSegment(name, fields)
+	return &seg
 }
 
 func (s *Segment) GetField(fieldIndex uint) *RepeatingField {

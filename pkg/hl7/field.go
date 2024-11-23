@@ -45,7 +45,7 @@ func NewFieldPointer(c []*Component) *Field {
 	return &f
 }
 
-func FieldFromComponents(componentStrings []ComponentString) Field {
+func FieldFromComponents(componentStrings []ComponentString) *Field {
 	components := []*Component{}
 
 	for _, c := range componentStrings {
@@ -53,7 +53,8 @@ func FieldFromComponents(componentStrings []ComponentString) Field {
 		components = append(components, &component)
 	}
 
-	return NewField(components)
+	field := NewField(components)
+	return &field
 }
 
 func (f *Field) ToString(d Delimeters) string {
