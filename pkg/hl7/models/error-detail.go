@@ -17,3 +17,15 @@ type ErrorDetail struct {
 	Severity    enums.ErrorSeverity
 	Description string
 }
+
+func NewErrorDetail(e error) *ErrorDetail {
+
+	err := ErrorDetail{
+		Location:    nil,
+		Code:        enums.ApplicationInternalError,
+		Severity:    enums.Error,
+		Description: e.Error(),
+	}
+
+	return &err
+}
