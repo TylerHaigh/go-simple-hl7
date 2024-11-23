@@ -20,8 +20,9 @@ func valueOrNull(val int) string {
 
 func CreateErrorSegment(hl7Version string, errorDetails models.ErrorDetail) *Segment {
 
+	isVersion251 := hl7Version == "2.5.1"
 	v, _ := strconv.ParseFloat(hl7Version, 32)
-	if v > minimumErrorSegmentVersion {
+	if isVersion251 || v > minimumErrorSegmentVersion {
 		return enhancedErrorSegment(errorDetails)
 	} else {
 		return legacyErrorSegment(errorDetails)
