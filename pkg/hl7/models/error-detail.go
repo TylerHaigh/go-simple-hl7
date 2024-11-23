@@ -18,7 +18,11 @@ type ErrorDetail struct {
 	Description string
 }
 
-func NewErrorDetail(e error) *ErrorDetail {
+func NewErrorDetail(
+	e error,
+	code enums.MessageErrorConditionCodes,
+	severity enums.ErrorSeverity,
+) *ErrorDetail {
 
 	err := ErrorDetail{
 		Location:    nil,
