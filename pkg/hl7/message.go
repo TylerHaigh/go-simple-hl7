@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/TylerHaigh/go-simple-hl7/internal/errors"
 	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/enums"
 	"golang.org/x/exp/slices"
 )
@@ -185,7 +186,10 @@ func (m *Message) CreateAckMessage(acknowledgementCode enums.AcknowledgementCode
 	return &ack
 }
 
-func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCode) *Message {
+func (m *Message) CreateNackMessage(
+	acknowledgementCode enums.AcknowledgementCode,
+	errors []errors.ErrorDetail,
+) *Message {
 	t := time.Now()
 
 	// https://www.geeksforgeeks.org/time-formatting-in-golang/
@@ -225,15 +229,15 @@ func (m *Message) CreateNackMessage(acknowledgementCode enums.AcknowledgementCod
 		m.GetField("MSH", 10),
 	})
 
-	// TODO: Create ERR segments from an error listing
-
-	//     const version = nack.getHeader().versionId.toString();
-	//     for (const e of errors) {
-	//       const err = createErrorSegment(version, e);
-	//       nack.pushSegment(err);
-	//     }
-
 	segments := []*Segment{&msh, &msa}
+
+	// Create ERR segments from an error listing
+	hl7Version := m.GetFieldString("MSH", 12)
+	for _, e := range errors {
+		err := CreateErrorSegment(hl7Version, e)
+		segments = append(segments, err)
+	}
+
 	nack := NewMessage(segments)
 
 	return &nack
