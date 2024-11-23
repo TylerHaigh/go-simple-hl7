@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TylerHaigh/go-simple-hl7/internal/errors"
 	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/enums"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/models"
 	"golang.org/x/exp/slices"
 )
 
@@ -188,7 +188,7 @@ func (m *Message) CreateAckMessage(acknowledgementCode enums.AcknowledgementCode
 
 func (m *Message) CreateNackMessage(
 	acknowledgementCode enums.AcknowledgementCode,
-	errors []errors.ErrorDetail,
+	errors []models.ErrorDetail,
 ) *Message {
 	t := time.Now()
 

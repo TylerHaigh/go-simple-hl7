@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/TylerHaigh/go-simple-hl7/internal/errors"
 	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/enums"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/models"
 )
 
 func TestCreateAck(t *testing.T) {
@@ -32,7 +32,7 @@ func TestCreateNack(t *testing.T) {
 	msg := ParseMessage(messageStr)
 
 	now := time.Now()
-	ack := msg.CreateNackMessage(enums.ApplicationReject, []errors.ErrorDetail{})
+	ack := msg.CreateNackMessage(enums.ApplicationReject, []models.ErrorDetail{})
 
 	hl7Time := now.Format("20060102150405")
 	expected := fmt.Sprintf("MSH|^~\\&|PAS-B|HOS-B|PAS-A|HOS-A|%s||ACK|ACK%s|P|2.8\rMSA|AR|MSG00001", hl7Time, hl7Time)

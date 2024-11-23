@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/TylerHaigh/go-simple-hl7/internal/errors"
+	"github.com/TylerHaigh/go-simple-hl7/pkg/hl7/models"
 )
 
 const minimumErrorSegmentVersion = 2.5
@@ -17,7 +18,7 @@ func valueOrNull(val int) string {
 	return string(val)
 }
 
-func CreateErrorSegment(hl7Version string, errorDetails errors.ErrorDetail) *Segment {
+func CreateErrorSegment(hl7Version string, errorDetails models.ErrorDetail) *Segment {
 
 	v, _ := strconv.ParseFloat(hl7Version, 32)
 	if v > minimumErrorSegmentVersion {
@@ -28,7 +29,7 @@ func CreateErrorSegment(hl7Version string, errorDetails errors.ErrorDetail) *Seg
 
 }
 
-func enhancedErrorSegment(errorDetails errors.ErrorDetail) *Segment {
+func enhancedErrorSegment(errorDetails models.ErrorDetail) *Segment {
 	desc := errors.MapErrorCodeDescription(errorDetails.Code)
 
 	errorLocation := []string{}
@@ -61,7 +62,7 @@ func enhancedErrorSegment(errorDetails errors.ErrorDetail) *Segment {
 	return err
 }
 
-func legacyErrorSegment(errorDetails errors.ErrorDetail) *Segment {
+func legacyErrorSegment(errorDetails models.ErrorDetail) *Segment {
 
 	desc := errors.MapErrorCodeDescription(errorDetails.Code)
 

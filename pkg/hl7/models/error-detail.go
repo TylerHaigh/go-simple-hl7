@@ -1,4 +1,4 @@
-package errors
+package models
 
 import "github.com/TylerHaigh/go-simple-hl7/pkg/hl7/enums"
 
